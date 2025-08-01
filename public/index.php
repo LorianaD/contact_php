@@ -50,7 +50,7 @@
         <form action="" method="post">
             <h2>Nous contacter</h2>
             <div class="enter">
-                <label for="name">Ton nom</label>
+                <label for="name">Votre nom</label>
                 <input type="text" name="name" id="name" placeholder="Entrez votre nom">
             </div>
             <div class="enter">
@@ -76,31 +76,31 @@
         </section>
         <section>
             <?php 
-                    if(!empty($contacts)) { // Si les contacts est different de vide alors
-                        foreach ($contacts as $contact) { // pour chaque contact faire une echo de ...
-                            echo "
-                            <article>
-                                <h3>$contact[name]</h3>
-                                <span>l'email est: $contact[email]</span>
-                                <p>
-                                    $contact[suject]
-                                </p>
-                                <p>
-                                    $contact[msg]
-                                </p>
-                            </article>
-                            ";
-                        }
-                        
-                    }else{ // sinon envoyer ce message
-                        var_dump($_SESSION['contacts']);
+                if(!empty($contacts)) { // Si les contacts est different de vide alors
+                    foreach ($contacts as $contact) { // pour chaque contact faire une echo de ...
                         echo "
+                        <article>
+                            <h3>$contact[name]</h3>
+                            <span>l'email est: $contact[email]</span>
                             <p>
-                                Nous n'avons pas reçu de messages!
+                                $contact[suject]
                             </p>
+                            <p>
+                                $contact[msg]
+                            </p>
+                        </article>
                         ";
                     }
-                ?>
+                    
+                }else{ // sinon envoyer ce message
+                    var_dump($_SESSION['contacts']);
+                    echo "
+                        <p>
+                            Nous n'avons pas reçu de messages!
+                        </p>
+                    ";
+                }
+            ?>
         </section>
     </main>
     <?php include '../includes/footer.php'; ?>
