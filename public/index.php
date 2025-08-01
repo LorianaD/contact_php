@@ -1,65 +1,39 @@
     <?php
+
+        session_start(); // On démarre la session
+
+        if (!isset($_SESSION["contacts"])) { // differente de null
+            $_SESSION["contacts"] = []; // $_SESSION on stock les données
+        }
         
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") { // requette au seveur en POST
 
-            $name = $_POST["name"]?? "";
-            $email = $_POST["email"]?? "";
-            $phone = $_POST["phone"]?? "";
-            $suject = $_POST["suject"]?? "";
-            $msg = $_POST["msg"]?? "";
+            $name = htmlspecialchars(trim($_POST["name"]?? ""));
+            $email = htmlspecialchars(trim($_POST["email"]?? ""));
+            $phone = htmlspecialchars(trim($_POST["phone"]?? ""));
+            $suject = htmlspecialchars(trim($_POST["suject"]?? ""));
+            $msg = htmlspecialchars(trim($_POST["msg"]?? ""));
 
-            $errors = [];
-
-            if (!empty($name) && !empty($email) && empty($phone) && !empty($suject) && !empty($msg)) {
+            if (!empty($name) && !empty($email) && !empty($phone) && !empty($suject) && !empty($msg)) { // ! = different // different de vide
 
                 $newContact = [
                     "name" => $name,
                     "email" => $email,
                     "phone" => $phone,
-                    "sujet" => $suject,
+                    "suject" => $suject,
                     "msg" => $msg
                 ];
 
+                // On ajoute un message dans la session
+                $_SESSION["contacts"][] = $newContact;
+
             };
 
-            session_start(); // On démarre une nouvelle session
+        };
 
-            $id_SESSION = session_id(); // On utilise session_id() pour récupérer l'id de session s'il existe.
+        $contacts = $_SESSION['contacts'];
 
-            if($id_SESSION){
-                var_dump($id_SESSION);
-            };
-
-            // $errors[] = "veuillez renseigner tout les champs";
-
-            if (empty($errors)) {
-
-                $name = htmlspecialchars(trim($name));
-                $email = htmlspecialchars(trim($email));
-                $phone = htmlspecialchars(trim($phone));
-                $suject = htmlspecialchars(trim($suject));
-                $msg = htmlspecialchars(trim($msg));
-            };
-
-            if (empty($errors)) {
-            ?>
-
-                <p>Votre message a été envoyé</p>
-
-            <?php
-            } else {
-                foreach($errors as $error) {
-                    ?>
-                    <div>
-                       <span><?= $error ?></span> 
-                    </div>
-                    <?php
-                };
-            };
-
-        };      
     ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -67,12 +41,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../includes/style.css">
+    <link rel="stylesheet" href="../asset/css/style.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
     <main>
-        
+        <section>
         <form action="" method="post">
             <h2>Nous contacter</h2>
             <div class="enter">
@@ -99,6 +73,35 @@
                 <input type="submit" value="Envoyer" class="btn-submit">
             </div>
         </form>
+        </section>
+        <section>
+            <?php 
+                    if(!empty($contacts)) { // Si les contacts est different de vide alors
+                        foreach ($contacts as $contact) { // pour chaque contact faire une echo de ...
+                            echo "
+                            <article>
+                                <h3>$contact[name]</h3>
+                                <span>l'email est: $contact[email]</span>
+                                <p>
+                                    $contact[suject]
+                                </p>
+                                <p>
+                                    $contact[msg]
+                                </p>
+                            </article>
+                            ";
+                        }
+                        
+                    }else{ // sinon envoyer ce message
+                        var_dump($_SESSION['contacts']);
+                        echo "
+                            <p>
+                                Nous n'avons pas reçu de messages!
+                            </p>
+                        ";
+                    }
+                ?>
+        </section>
     </main>
     <?php include '../includes/footer.php'; ?>
     <!-- include "": continue a travailler meme si il ne trouve pas le fichier -->
